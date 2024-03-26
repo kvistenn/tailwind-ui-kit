@@ -1,3 +1,3 @@
 # tailwind-ui-kit
 
-## A complete UI kit for a Tailwind CSS enviroment
+A complete UI kit for a Tailwind CSS enviroment
