@@ -1,0 +1,31 @@
+{
+    "name": "button",
+    "label": "Button",
+    "component": {
+        "tag": "div",
+        "classes": {
+            "base": "w-full rounded p-2",
+            "sizes": {
+                "sm": "py-1 px-2",
+                "md": "py-2 px-4",
+                "lg": "py-3 px-6"
+            },
+            "variants": {
+                "default": "border border-gray-200"
+            }
+        },
+        "children": [
+            {
+                "tag": "input",
+                "classes": {
+                    "base": "w-full outline-none appearance-none",
+                    "sizes": {
+                        "sm": "text-sm",
+                        "md": "text-base",
+                        "lg": "text-lg"
+                    }
+                }
+            }
+        ]
+    }
+}
