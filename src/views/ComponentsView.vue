@@ -86,7 +86,7 @@
 				</div>
 				<ComponentViewer
 					:components="[
-						{ component: inouttext, size: 'sm' },
+						{ component: inputtext, size: 'sm' },
 						{ component: inputtext, size: 'md' },
 						{ component: inputtext, size: 'lg' }
 					]"
@@ -111,5 +111,9 @@
 				inputtext
             }
         },
+		mounted() {
+			console.log(this.button);
+			console.log(this.inputtext);
+		}
 	}
 </script>

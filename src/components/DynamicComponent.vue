@@ -1,5 +1,7 @@
 <template>
-    <component v-if="component.tag == 'img' || component.tag == 'input'" :is="component.tag" :class="classes" v-bind="component.attributes" />
+    <img v-if="component.tag == 'img'" :class="classes" v-bind="component.attributes" />
+    <input v-else-if="component.tag == 'input'" :class="classes" v-bind="component.attributes" />
+    <path v-else-if="component.tag == 'path'" :class="classes" v-bind="component.attributes" />
     <component v-else :is="component.tag" :class="classes" v-bind="component.attributes">
         <DynamicComponent v-for="(child, index) in component.children" :key="index" :component="child" :size="size"
             :variant="variant" v-if="component.children && component.children.length > 0" />
@@ -33,14 +35,13 @@ export default {
             default: 'default',
         },
     },
-    mounted: () => {
-        console.log(this.component);
-    },
     computed: {
         classes() {
             const classes = this.component.classes;
             var variantClasses = null;
             const output = [];
+
+            console.log(this.component);
 
             if (!classes) {
                 return '';

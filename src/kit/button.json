@@ -4,11 +4,11 @@
     "component": {
         "tag": "button",
         "classes": {
-            "base": "leading-none transition-colors",
+            "base": "leading-none rounded transition-colors",
             "sizes": {
-                "sm": "px-3 py-1.5 rounded",
-                "md": "px-4 py-2 rounded",
-                "lg": "px-5 py-3 rounded"
+                "sm": "px-3 py-1.5",
+                "md": "px-4 py-2",
+                "lg": "px-5 py-3"
             },
             "focus": "focus:outline-none",
             "variants": {
