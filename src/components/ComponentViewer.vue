@@ -53,7 +53,7 @@
         </div>
         <div v-show="!toggle" class="block p-4 viewer min-h-36 rounded-md border border-gray-200 dark:border-none dark:bg-gray-900">
             <div ref="preview" class="w-full flex flex-wrap items-start mx-auto transition-all" :class="[' ' + gap, device == 0 ? ' max-w-screen-xl' : device == 1 ? ' max-w-screen-md' : device == 2 ? ' max-w-screen-xs' : null]">
-                <dynamic-component v-for="item in components" :component="item.component.component" :variant="item.variant" :size="item.size" />
+                <dynamic-component v-for="item in components" :component="item.component.component" :variant="item.variants" :size="item.size" />
             </div>
         </div>
         <div v-show="toggle" class="block">
