@@ -15,11 +15,10 @@
 						<p>Suspendisse vehicula lacus in metus sollicitudin ultrices. Nulla eget faucibus nulla. In hac habitasse platea dictumst.</p>
 					</div>
 				</div>
-				<ComponentViewer
+				<Playground id="1" :preview="true" />
+				<Playground id="2"
 					:components="[
-						{ component: button, size: 'sm' },
-						{ component: button, size: 'md' },
-						{ component: button, size: 'lg' }
+						grid
 					]"
 				/>
 			</div>
@@ -29,23 +28,22 @@
 </template>
 
 <script>
-	import ComponentViewer from '@/components/ComponentViewer.vue'
-	import button from '@/kit/button.json';
-	import inputtext from '@/kit/inputtext.json';
+	import Playground from '@/components/Playground.vue'
+	import button from '@/uikit/button.json';
+	import input from '@/uikit/input.json';
+	import grid from '@/uikit/grid.json';
 
 	export default {
+		name: 'ComponentsView',
 		components: {
-			ComponentViewer
+			Playground
 		},
 		data() {
             return {
                 button,
-				inputtext
+				input,
+				grid
             }
-        },
-		mounted() {
-			console.log(this.button);
-			console.log(this.inputtext);
-		}
+        }
 	}
 </script>

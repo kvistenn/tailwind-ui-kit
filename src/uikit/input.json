@@ -1,0 +1,41 @@
+{
+    "tag": "div",
+    "classes": "flex w-full rounded leading-none bg-white py-2 border border-gray-200",
+    "draggable": true,
+    "children": [
+        {
+            "tag": "span",
+            "classes": "flex-none pl-2",
+            "children": [
+                {
+                    "tag": "svg",
+                    "attributes": {
+                        "xmlns": "http://www.w3.org/2000/svg",
+                        "fill": "none",
+                        "viewBox": "0 0 24 24",
+                        "stroke": "currentColor",
+                        "stroke-width": "1"
+                    },
+                    "classes": "w-5 h-5",
+                    "children": [
+                        {
+                            "tag": "path",
+                            "attributes": {
+                                "stroke-linecap": "round",
+                                "stroke-linejoin": "round",
+                                "d": "M4 6h16M4 12h8m-8 6h16"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "input",
+            "attributes": {
+                "type": "text"
+            },
+            "classes": "w-full appearance-none bg-transparent text-black text-sm px-2 focus:outline-none"
+        }
+    ]
+}

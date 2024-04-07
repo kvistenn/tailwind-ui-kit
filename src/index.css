@@ -19,6 +19,12 @@
     src: url('./assets/fonts/bahnschrift-bold.ttf') format('ttf');
     font-weight: 700;
 }
+
+html,body,#app {
+    width: 100%;
+    height: 100%;
+}
+
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;

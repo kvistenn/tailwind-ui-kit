@@ -1,0 +1,26 @@
+{
+    "tag": "div",
+    "classes": "w-full min-h-20 grid grid-cols-3",
+    "droppable": true,
+    "draggable": true,
+    "children": [
+        {
+            "tag": "div",
+            "classes": "border border-dashed border-blue-700",
+            "children": [],
+            "droppable": true
+        },
+        {
+            "tag": "div",
+            "classes": "border border-dashed border-green-700",
+            "children": [],
+            "droppable": true
+        },
+        {
+            "tag": "div",
+            "classes": "border border-dashed border-red-700",
+            "children": [],
+            "droppable": true
+        }
+    ]
+}

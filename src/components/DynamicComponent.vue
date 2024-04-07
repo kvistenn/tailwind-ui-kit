@@ -1,93 +1,63 @@
 <template>
-    <img v-if="component.tag == 'img'" :class="classes" v-bind="component.attributes" />
-    <input v-else-if="component.tag == 'input'" :class="classes" v-bind="component.attributes" />
-    <path v-else-if="component.tag == 'path'" :class="classes" v-bind="component.attributes" />
-    <component v-else :is="component.tag" :class="classes" v-bind="component.attributes">
-        <DynamicComponent v-for="(child, index) in component.children" :key="index" :component="child" :size="size"
-            :variant="variant" v-if="component.children && component.children.length > 0" />
-        {{ component.text ? component.text : '' }}
+    <img v-if="localComponent.tag == 'img'" @click="openSettings(localComponent)" :data-key="localComponent.key" :class="localComponent.classes" v-bind="localComponent.attributes" />
+    <input v-else-if="localComponent.tag == 'input'" @click="openSettings(localComponent)" :data-key="localComponent.key" :class="localComponent.classes" v-bind="localComponent.attributes" />
+    <path v-else-if="localComponent.tag == 'path'" @click="openSettings(localComponent)" :data-key="localComponent.key" :class="localComponent.classes" v-bind="localComponent.attributes" />
+    <component v-else :is="localComponent.tag" @click="openSettings(localComponent)" :data-key="localComponent.key" :draggable="preview ? false : true" :droppable="preview ? false : localComponent.droppable" v-on="{ dragover: preview ? null : (localComponent.droppable ? handleDragOver : null), drop: preview ? null : (localComponent.droppable ? handleDrop : null), dragstart: preview ? null : (e) => handleDragStart(e), dragend: preview ? null : (e) => handleDragEnd(e, localComponent) }" :class="localComponent.classes" v-bind="localComponent.attributes">
+        <DynamicComponent v-for="(child, index) in localComponent.children" :key="index" @click="openSettings(child)" :data-key="child.key" :component="child" v-if="localComponent.children && localComponent.children.length > 0" :draggable="preview ? false : child.draggable" :droppable="preview ? false : child.droppable" v-on="{ dragover: preview ? null : (child.droppable ? handleDragOver : null), drop: preview ? null : (child.droppable ? handleDrop : null), dragstart: preview ? null : (e) => handleDragStart(e, child), dragend: preview ? null : (e) => handleDragEnd(e, child) }" />
+        {{ localComponent.text ? localComponent.text : '' }}
     </component>
 </template>
 
 <script>
 
-import { useSettingsStore } from '../stores/settings.js';
+import { useSettingsStore } from '@/stores/settings.js';
 
 export default {
     name: 'DynamicComponent',
-    setup() {
-        const settings = useSettingsStore();
-        return {
-            settings,
-        }
-    },
     props: {
         component: {
             type: Object,
             required: true,
         },
-        size: {
-            type: String,
-            default: 'md',
+        handleDrop: {
+            type: Function,
+            default: () => {},
         },
-        variant: {
-            type: String,
-            default: 'default',
+        handleDragOver: {
+            type: Function,
+            default: () => {},
+        },
+        handleDragStart: {
+            type: Function,
+            default: () => {},
+        },
+        handleDragEnd: {
+            type: Function,
+            default: () => {},
+        },
+        preview: {
+            type: Boolean,
+            default: false,
         },
     },
-    computed: {
-        classes() {
-            const classes = this.component.classes;
-            var variantClasses = null;
-            const output = [];
-
-            console.log(this.component);
-
-            if (!classes) {
-                return '';
-            }
-
-            if (this.variant && classes.variants && classes.variants[this.variant]) {
-                variantClasses = classes.variants[this.variant];
-            }
-
-            const pushClass = (key, subKey) => {
-                if (key === 'base') {
-                    if (variantClasses && variantClasses.base) {
-                        output.push(variantClasses.base);
-                    }
-                    if (classes.base) {
-                        output.push(classes.base);
-                    }
-                } else {
-                    if (variantClasses && variantClasses[key]) {
-                        if (subKey) {
-                            if (variantClasses[key][subKey]) {
-                                output.push(variantClasses[key][subKey]);
-                            }
-                        } else {
-                            output.push(variantClasses[key]);
-                        }
-                    } else if (classes[key]) {
-                        if (subKey) {
-                            if (classes[key][subKey]) {
-                                output.push(classes[key][subKey]);
-                            }
-                        } else {
-                            output.push(classes[key]);
-                        }
-                    }
-                }
-            };
-
-            pushClass('base');
-            pushClass('sizes', this.size);
-            pushClass('thickness', this.settings.thickness);
-            pushClass('dark', 'base');
-            pushClass('hover');
-            pushClass('focus');
-
-            return output.join(' ');
+    setup() {
+        const settings = useSettingsStore();
+        return {
+            openSettings: settings.openSettings,
+            closeSettings: settings.closeSettings,
+        };
+    },
+    data() {
+        return {
+            localComponent: JSON.parse(JSON.stringify(this.component)),
+        };
+    },
+    watch: {
+        component: {
+            handler(newValue) {
+                this.localComponent = JSON.parse(JSON.stringify(newValue));
+            },
+            deep: true,
         },
     },
 };

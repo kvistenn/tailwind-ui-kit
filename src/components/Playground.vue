@@ -51,9 +51,9 @@
                 </button>
             </div>
         </div>
-        <div v-show="!toggle" class="block p-4 viewer min-h-36 rounded-md border border-gray-200 dark:border-none dark:bg-gray-900">
-            <div ref="preview" class="w-full flex flex-wrap items-start mx-auto transition-all" :class="[' ' + gap, device == 0 ? ' max-w-screen-xl' : device == 1 ? ' max-w-screen-md' : device == 2 ? ' max-w-screen-xs' : null]">
-                <dynamic-component v-for="item in components" :component="item.component.component" :variant="item.variants" :size="item.size" />
+        <div v-show="!toggle" @dragover="conditionalPreventDragover" :droppable="!preview" @drop="handleDrop" class="block p-4 viewer min-h-36 rounded-md border border-gray-200 dark:border-none dark:bg-gray-900">
+            <div ref="preview" class="w-full h-full flex flex-wrap items-start mx-auto transition-all" :class="[' ' + gap, device == 0 ? ' max-w-screen-xl' : device == 1 ? ' max-w-screen-md' : device == 2 ? ' max-w-screen-xs' : null]">
+                <dynamic-component v-for="item in items" :component="item" :preview="preview" v-if="items" :handleDrop="preview ? null : handleDrop" :handleDragOver="preview ? null : handleDragOver" :handleDragStart="preview ? null : handleDragStart" :handleDragEnd="preview ? null : handleDragEnd" :draggable="preview ? false : true" :droppable="preview ? false : true" />
             </div>
         </div>
         <div v-show="toggle" class="block">
@@ -70,29 +70,38 @@
 
 <script>
 
-    import { useSettingsStore } from '../stores/settings.js';
-    import DynamicComponent from './DynamicComponent.vue';
+    import DynamicComponent from '@/components/DynamicComponent.vue';
     import VCodeBlock from '@wdns/vue-code-block';
+    import { useSettingsStore } from '@/stores/settings.js';
 
     export default {
-        setup() {
-            const settings = useSettingsStore();
-            return {
-                settings,
-            }
-        },
+        name: 'Playground',
         props: {
+            id: {
+                type: String,
+                default: '',
+            },
             components: {
                 type: Array,
-                required: true,
+                default: () => [],
             },
             gap: {
                 type: String,
                 default: 'gap-4',
             },
+            preview: {
+                type: Boolean,
+                default: false,
+            },
         },
         components: {
             DynamicComponent,
+        },
+        setup() {
+            const settings = useSettingsStore();
+            return {
+                closeSettings: settings.closeSettings,
+            };
         },
         data() {
             return {
@@ -100,6 +109,8 @@
                 device: 0,
                 htmlCode: '',
                 copied: false,
+                items: [],
+                dragOverTarget: null,
             }
         },
         methods: {
@@ -117,81 +128,135 @@
                     }, 1000);
                 });
             },
-            generateHtmlCode(item, indent = '') {
-                const component = item.component.component;
-                const classes = component.classes;
-                let variantClasses = null;
-                const output = [];
-                let itemClasses = '';
+            handleDragOver(e) {
+                e.preventDefault();
 
-                if(!item.variant) {
-                    item.variant = 'default';
+                const target = e.target;
+                const targetKey = target.getAttribute('data-key');
+                
+                if(target.hasAttribute('droppable')) {
+                    this.dragOverTarget = targetKey;
+                } else {
+                    this.dragOverTarget = null;
                 }
+            },
+            handleDrop(e) {
+                e.stopPropagation();
+                
+                const data = e.dataTransfer.getData('component');
+                const component = JSON.parse(data);
+                const targetKey = this.dragOverTarget;
 
-                if (item.variant && classes.variants && classes.variants[item.variant]) {
-                    variantClasses = classes.variants[item.variant];
-                }
+                this.addUniqueKey([component]);
 
-                const pushClass = (key, subKey) => {
-                    if (key === 'base') {
-                        if (variantClasses && variantClasses.base) {
-                            output.push(variantClasses.base);
-                        }
-                        if (classes.base) {
-                            output.push(classes.base);
-                        }
-                    } else {
-                        if (variantClasses && variantClasses[key]) {
-                            if (subKey) {
-                                if (variantClasses[key][subKey]) {
-                                    output.push(variantClasses[key][subKey]);
-                                }
-                            } else {
-                                output.push(variantClasses[key]);
+                if(targetKey == e.target.getAttribute('data-key')) {
+
+                    // Search for item.key == targetKey in components and children
+                    const findItem = (items, targetKey) => {
+                        for(let i = 0; i < items.length; i++) {
+                            if(items[i].key == targetKey) {
+                                return items[i];
                             }
-                        } else if (classes[key]) {
-                            if (subKey) {
-                                if (classes[key][subKey]) {
-                                    output.push(classes[key][subKey]);
+                            if(items[i].children) {
+                                const found = findItem(items[i].children, targetKey);
+                                if(found) {
+                                    return found;
                                 }
-                            } else {
-                                output.push(classes[key]);
                             }
                         }
                     }
-                };
 
-                pushClass('base');
-                pushClass('sizes', item.size);
-                pushClass('thickness', this.settings.thickness);
-                pushClass('dark', 'base');
-                pushClass('hover');
-                pushClass('focus');
-
-                itemClasses = output.join(' ');
-
-                let htmlCode = `${indent}<${component.tag} class="${itemClasses}">\n`;
-
-                if (component.text) {
-                    htmlCode += `${indent}    ${component.text}\n`;
-                } else if (component.children) {
-                    component.children.forEach((child) => {
-                        htmlCode += this.generateHtmlCode({ component: { component: child }, size: item.size }, `${indent}    `);
-                    });
+                    const target = findItem(this.items, targetKey);
+                    
+                    if(target) {
+                        if(target.children) {
+                            target.children.push(component);
+                        } else {
+                            target.children = [component];
+                        }
+                    }
+                } else {
+                    this.items.push(component);
                 }
 
-                htmlCode += `${indent}</${component.tag}>\n`;
+                this.saveItemsToLocalStorage();
+            },
+            handleDragStart(e) {
+                e.stopPropagation();
+                
+                const dragKey = e.target.getAttribute('data-key');
 
-                return htmlCode;
+                // Find dragKey in items[x].key and items[x].children[x].key
+                const findKey = (items, dragKey) => {
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].key === dragKey) {
+                            return items[i];
+                        }
+                        if (items[i].children) {
+                            const found = findKey(items[i].children, dragKey);
+                            if (found) {
+                                return found;
+                            }
+                        }
+                    }
+                }
+
+                const targetItem = findKey(this.items, dragKey);
+                e.dataTransfer.setData('component', JSON.stringify(targetItem));
+            },
+            handleDragEnd(e) {
+                e.preventDefault();
+                const dragKey = e.target.getAttribute('data-key');
+                const findKeyAndRemove = (items, dragKey) => {
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].key === dragKey) {
+                            return items.splice(i, 1);
+                        }
+                        if (items[i].children) {
+                            const found = findKeyAndRemove(items[i].children, dragKey);
+                            if (found) {
+                                return found;
+                            }
+                        }
+                    }
+                }
+                findKeyAndRemove(this.items, dragKey);
+
+                this.saveItemsToLocalStorage();
+            },
+            randomizeUniqueKey() {
+                return Math.random().toString(36).substr(2, 9);
+            },
+            addUniqueKey(components) {
+                components.forEach((component, index) => {
+                    component.key = this.randomizeUniqueKey();
+                    if (component.children) {
+                        for(let i = 0; i < component.children.length; i++) {
+                            component.children[i].key = this.randomizeUniqueKey();
+                        }
+                    }
+                });
+            },
+            saveItemsToLocalStorage() {
+                localStorage.setItem('playground_' + this.id, JSON.stringify(this.items));
+            },
+            conditionalPreventDragover(e) {
+                if (!this.preview) {
+                    e.preventDefault();
+                }
             },
         },
         mounted() {
-            this.components.forEach((item, i) => {
-                this.htmlCode += this.generateHtmlCode(item)
-                if(i < this.components.length - 1) {
-                    this.htmlCode += '\n';
-                }
-            });
-        }
+
+            const components = this.components;
+
+            this.addUniqueKey(components);
+
+            if(localStorage.getItem('playground_' + this.id)) {
+                this.items = JSON.parse(localStorage.getItem('playground_' + this.id));
+            } else {
+                this.items = components;
+            }
+        },
     }
 </script>
