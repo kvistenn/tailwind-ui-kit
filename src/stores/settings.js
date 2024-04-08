@@ -12,11 +12,13 @@ export const useSettingsStore = defineStore('settings', {
         },
         openSettings(item) {
             this.settingsOpen = true;
-            this.currentSettingsData = item;
         },
         closeSettings() {
             this.settingsOpen = false;
             this.currentSettingsData = null;
+        },
+        setSettingsData(data) {
+            this.currentSettingsData = data;
         }
     },
     persist: {
