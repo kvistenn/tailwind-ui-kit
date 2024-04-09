@@ -1,6 +1,6 @@
 <template>
 
-    <div class="flex flex-col border border-gray-200 rounded-lg p-2 gap-2">
+    <div class="flex flex-col border border-gray-200 rounded-lg p-2 gap-2" :class="{ 'h-full': fullscreen }">
         <div class="flex justify-between leading-none">
             <div class="flex gap-2">
                 <button @click="toggle = !toggle" :class="toggle ? ' open' : null" class="w-8 h-8 overflow-hidden rounded-md border border-gray-200 appearance-none group hover:border-gray-400 transition-colors">
@@ -51,17 +51,19 @@
                 </button>
             </div>
         </div>
-        <div v-show="!toggle" @dragover="conditionalPreventDragover" :droppable="!preview" @drop="handleDrop" class="block p-4 viewer min-h-36 rounded-md border border-gray-200 dark:border-none dark:bg-gray-900">
-            <div ref="preview" class="w-full h-full flex flex-wrap items-start mx-auto transition-all" :class="[' ' + gap, device == 0 ? ' max-w-screen-xl' : device == 1 ? ' max-w-screen-md' : device == 2 ? ' max-w-screen-xs' : null]">
+        <div v-show="!toggle" @dragover="conditionalPreventDragover" :droppable="!preview" @drop="handleDrop" class="block flex-auto p-4 viewer min-h-36 rounded-md border border-gray-200 dark:border-none dark:bg-gray-900">
+            <div ref="preview" class="w-full h-full flex-wrap mx-auto transition-all" :class="[' ' + gap, device == 0 ? ' max-w-full' : device == 1 ? ' max-w-screen-md' : device == 2 ? ' max-w-screen-xs' : null]">
                 <dynamic-component v-for="item in items" :component="item" :preview="preview" v-if="items" :handleDrop="preview ? null : handleDrop" :handleDragOver="preview ? null : handleDragOver" :handleDragStart="preview ? null : handleDragStart" :handleDragEnd="preview ? null : handleDragEnd" :draggable="preview ? false : true" :droppable="preview ? false : true" />
             </div>
         </div>
-        <div v-show="toggle" class="block">
+        <div v-show="toggle" class="block flex-auto">
             <VCodeBlock
                 :code="htmlCode"
                 highlightjs
                 lang="html"
                 codeBlockRadius="0.375rem"
+                :class="{ 'fullscreen h-full': fullscreen }"
+                :height="fullscreen ? '100%' : 'auto'"
             />
         </div>
     </div>
@@ -73,6 +75,7 @@
     import DynamicComponent from '@/components/DynamicComponent.vue';
     import VCodeBlock from '@wdns/vue-code-block';
     import { useSettingsStore } from '@/stores/settings.js';
+    import container from '@/uikit/container.json';
 
     export default {
         name: 'Playground',
@@ -83,13 +86,17 @@
             },
             components: {
                 type: Array,
-                default: () => [],
+                default: [],
             },
             gap: {
                 type: String,
                 default: 'gap-4',
             },
             preview: {
+                type: Boolean,
+                default: false,
+            },
+            fullscreen: {
                 type: Boolean,
                 default: false,
             },
@@ -147,9 +154,11 @@
                 const component = JSON.parse(data);
                 const targetKey = this.dragOverTarget;
 
+                console.log(component, targetKey);
+
                 this.addUniqueKey([component]);
 
-                if(targetKey == e.target.getAttribute('data-key')) {
+                if(targetKey == e.target.getAttribute('data-key') && targetKey != null) {
 
                     // Search for item.key == targetKey in components and children
                     const findItem = (items, targetKey) => {
@@ -177,6 +186,8 @@
                     }
                 } else {
                     this.items.push(component);
+
+                    console.log(this.items)
                 }
 
                 this.saveItemsToLocalStorage();

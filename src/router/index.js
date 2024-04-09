@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import PlaygroundView from '@/views/PlaygroundView.vue'
 import ComponentsView from '@/views/ComponentsView.vue'
 
 const router = createRouter({
@@ -7,8 +7,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'playground',
+      component: PlaygroundView
     },
     {
       path: '/components',

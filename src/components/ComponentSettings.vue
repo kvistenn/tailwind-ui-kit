@@ -1,6 +1,6 @@
 <template>
     <div class="space-y-4">
-        <div v-for="setting in currentSettingsData.settings">
+        <div v-for="setting in currentSettingsData.settings" v-if="currentSettingsData">
             <label class="space-y-1">
                 <strong>{{ setting.label }}</strong>
                 <select class="h-10 px-4 text-sm border border-gray-200 rounded w-full">
