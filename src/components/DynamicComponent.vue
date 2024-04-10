@@ -44,10 +44,11 @@ export default {
         const settings = useSettingsStore();
 
         const openSettings = (event, component) => {
-            if (event.target.getAttribute('draggable') === 'true' && component.settings !== undefined) {
+            event.stopPropagation();
+            console.log(event.target.getAttribute('draggable'))
+            if (event.target.getAttribute('draggable') !== null && component.settings !== undefined) {
                 settings.openSettings();
                 settings.setSettingsData(component);
-                return; // Stop the function here
             }
         };
 

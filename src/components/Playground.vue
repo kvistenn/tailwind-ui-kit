@@ -75,7 +75,6 @@
     import DynamicComponent from '@/components/DynamicComponent.vue';
     import VCodeBlock from '@wdns/vue-code-block';
     import { useSettingsStore } from '@/stores/settings.js';
-    import container from '@/uikit/container.json';
 
     export default {
         name: 'Playground',
@@ -140,8 +139,9 @@
 
                 const target = e.target;
                 const targetKey = target.getAttribute('data-key');
-                
+
                 if(target.hasAttribute('droppable')) {
+                    /* console.log('dragover', targetKey); */
                     this.dragOverTarget = targetKey;
                 } else {
                     this.dragOverTarget = null;
@@ -154,7 +154,7 @@
                 const component = JSON.parse(data);
                 const targetKey = this.dragOverTarget;
 
-                console.log(component, targetKey);
+                console.log('drop', targetKey);
 
                 this.addUniqueKey([component]);
 
@@ -186,8 +186,6 @@
                     }
                 } else {
                     this.items.push(component);
-
-                    console.log(this.items)
                 }
 
                 this.saveItemsToLocalStorage();
@@ -195,16 +193,18 @@
             handleDragStart(e) {
                 e.stopPropagation();
                 
-                const dragKey = e.target.getAttribute('data-key');
+                const targetKey = e.target.getAttribute('data-key');
 
-                // Find dragKey in items[x].key and items[x].children[x].key
-                const findKey = (items, dragKey) => {
+                console.log('dragstart', targetKey);
+
+                // Find targetKey in items[x].key and items[x].children[x].key
+                const findKey = (items, targetKey) => {
                     for (let i = 0; i < items.length; i++) {
-                        if (items[i].key === dragKey) {
+                        if (items[i].key === targetKey) {
                             return items[i];
                         }
                         if (items[i].children) {
-                            const found = findKey(items[i].children, dragKey);
+                            const found = findKey(items[i].children, targetKey);
                             if (found) {
                                 return found;
                             }
@@ -212,26 +212,30 @@
                     }
                 }
 
-                const targetItem = findKey(this.items, dragKey);
+                const targetItem = findKey(this.items, targetKey);
                 e.dataTransfer.setData('component', JSON.stringify(targetItem));
             },
             handleDragEnd(e) {
-                e.preventDefault();
-                const dragKey = e.target.getAttribute('data-key');
-                const findKeyAndRemove = (items, dragKey) => {
+                e.stopPropagation();
+
+                const targetKey = e.target.getAttribute('data-key');
+
+                console.log('dragend', targetKey);
+
+                const findKeyAndRemove = (items, targetKey) => {
                     for (let i = 0; i < items.length; i++) {
-                        if (items[i].key === dragKey) {
+                        if (items[i].key === targetKey) {
                             return items.splice(i, 1);
                         }
                         if (items[i].children) {
-                            const found = findKeyAndRemove(items[i].children, dragKey);
+                            const found = findKeyAndRemove(items[i].children, targetKey);
                             if (found) {
                                 return found;
                             }
                         }
                     }
                 }
-                findKeyAndRemove(this.items, dragKey);
+                findKeyAndRemove(this.items, targetKey);
 
                 this.saveItemsToLocalStorage();
             },

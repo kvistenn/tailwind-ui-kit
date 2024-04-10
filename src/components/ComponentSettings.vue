@@ -3,10 +3,8 @@
         <div v-for="setting in currentSettingsData.settings" v-if="currentSettingsData">
             <label class="space-y-1">
                 <strong>{{ setting.label }}</strong>
-                <select class="h-10 px-4 text-sm border border-gray-200 rounded w-full">
-                    <option value="primary">Primary</option>
-                    <option value="secondary">Secondary</option>
-                    <option value="outlined">Outlined</option>
+                <select class="h-10 px-4 text-sm border border-gray-200 rounded w-full" v-if="setting.type == 'select'">
+                    <option v-for="option in setting.options" :value="option.value">{{ option.label }}</option>
                 </select>
             </label>
         </div>

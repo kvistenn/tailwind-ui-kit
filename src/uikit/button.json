@@ -20,7 +20,7 @@
             "type": "select",
             "label": "Styles",
             "key": "class",
-            "choices": [
+            "options": [
                 {
                     "name": "primary",
                     "label": "Primary",
