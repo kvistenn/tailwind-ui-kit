@@ -1,9 +1,9 @@
 <template>
-    <img v-if="localComponent.tag == 'img'" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :class="localComponent.classes" v-bind="localComponent.attributes" />
-    <input v-else-if="localComponent.tag == 'input'" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :class="localComponent.classes" v-bind="localComponent.attributes" />
-    <path v-else-if="localComponent.tag == 'path'" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :class="localComponent.classes" v-bind="localComponent.attributes" />
-    <component v-else :is="localComponent.tag" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :draggable="preview ? false : true" :droppable="preview ? false : localComponent.droppable" v-on="{ dragover: preview ? null : (localComponent.droppable ? handleDragOver : null), drop: preview ? null : (localComponent.droppable ? handleDrop : null), dragstart: preview ? null : (e) => handleDragStart(e), dragend: preview ? null : (e) => handleDragEnd(e, localComponent) }" :class="localComponent.classes" v-bind="localComponent.attributes">
-        <DynamicComponent v-for="(child, index) in localComponent.children" :key="index" @click="(e) => openSettings(e, child)" :data-key="child.key" class="pointer-cursor" :component="child" v-if="localComponent.children && localComponent.children.length > 0" :draggable="preview ? false : child.draggable" :droppable="preview ? false : child.droppable" v-on="{ dragover: preview ? null : (child.droppable ? handleDragOver : null), drop: preview ? null : (child.droppable ? handleDrop : null), dragstart: preview ? null : (e) => handleDragStart(e, child), dragend: preview ? null : (e) => handleDragEnd(e, child) }" />
+    <img v-if="localComponent.tag == 'img'" @contextmenu.prevent="openContextMenu($event, localComponent)" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :class="localComponent.classes" v-bind="localComponent.attributes" />
+    <input v-else-if="localComponent.tag == 'input'" @contextmenu.prevent="openContextMenu($event, localComponent)" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :class="localComponent.classes" v-bind="localComponent.attributes" />
+    <path v-else-if="localComponent.tag == 'path'" @contextmenu.prevent="openContextMenu($event, localComponent)" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :class="localComponent.classes" v-bind="localComponent.attributes" />
+    <component v-else :is="localComponent.tag" @contextmenu.prevent="openContextMenu($event, localComponent)" @click="(e) => openSettings(e, localComponent)" :data-key="localComponent.key" class="pointer-cursor" :draggable="preview ? false : true" :droppable="preview ? false : localComponent.droppable" v-on="{ dragover: preview ? null : (localComponent.droppable ? handleDragOver : null), drop: preview ? null : (localComponent.droppable ? handleDrop : null), dragstart: preview ? null : (e) => handleDragStart(e), dragend: preview ? null : (e) => handleDragEnd(e, localComponent) }" :class="localComponent.classes" v-bind="localComponent.attributes">
+        <DynamicComponent v-for="(child, index) in localComponent.children" :key="index" @contextmenu.prevent="openContextMenu($event, child)" @click="(e) => openSettings(e, child)" :data-key="child.key" class="pointer-cursor" :component="child" v-if="localComponent.children && localComponent.children.length > 0" :draggable="preview ? false : child.draggable" :droppable="preview ? false : child.droppable" v-on="{ dragover: preview ? null : (child.droppable ? handleDragOver : null), drop: preview ? null : (child.droppable ? handleDrop : null), dragstart: preview ? null : (e) => handleDragStart(e, child), dragend: preview ? null : (e) => handleDragEnd(e, child) }" />
         {{ localComponent.text ? localComponent.text : '' }}
     </component>
 </template>
@@ -39,13 +39,16 @@ export default {
             type: Boolean,
             default: false,
         },
+        openContextMenu: {
+            type: Function,
+            default: () => {},
+        },
     },
     setup() {
         const settings = useSettingsStore();
 
         const openSettings = (event, component) => {
             event.stopPropagation();
-            console.log(event.target.getAttribute('draggable'))
             if (event.target.getAttribute('draggable') !== null && component.settings !== undefined) {
                 settings.openSettings();
                 settings.setSettingsData(component);
