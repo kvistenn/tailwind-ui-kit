@@ -5,7 +5,11 @@
     </div>
     <nav class="flex-auto flex justify-center items-center">
       <ul class="flex items-center gap-4">
-        <li><RouterLink to="/" class="text-xs uppercase font-bold">Playground</RouterLink></li>
+        <li><RouterLink to="/" class="text-xs uppercase font-bold">Overview</RouterLink></li>
+        <li><span class="text-black/20 font-light">/</span></li>
+        <li><RouterLink to="/playground" class="text-xs uppercase font-bold">Playground</RouterLink></li>
+        <li><span class="text-black/20 font-light">/</span></li>
+        <li><RouterLink to="/layouts" class="text-xs uppercase font-bold">Layouts</RouterLink></li>
         <li><span class="text-black/20 font-light">/</span></li>
         <li><RouterLink to="/components" class="text-xs uppercase font-bold">Components</RouterLink></li>
       </ul>

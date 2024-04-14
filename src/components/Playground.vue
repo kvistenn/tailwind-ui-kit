@@ -26,6 +26,16 @@
                         </svg>
                     </span>
                 </button>
+                <button v-if="!preview" @click="clearLocalStorage" class="h-8 px-3 overflow-hidden leading-none rounded-md border border-gray-200 appearance-none group hover:border-gray-400 transition-colors">
+                    <span class="text-xs leading-none uppercase flex items-center h-full group-[&.copied]:-translate-y-full transition-transform">
+                        Clear
+                    </span>
+                    <span class="text-xs leading-none uppercase flex items-center justify-center h-full w-full group-[&.copied]:-translate-y-full transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </span>
+                </button>
             </div>
             <div class="flex gap-2">
                 <button @click="device = 0" :class="device == 0 ? ' open' : null" class="w-8 h-8 rounded-md border border-gray-200 appearance-none hover:border-gray-400 [&.open]:border-black transition-colors">
@@ -52,8 +62,17 @@
             </div>
         </div>
         <div v-show="!toggle" @dragover="conditionalPreventDragover" :droppable="!preview" @drop="handleDrop" class="block flex-auto p-4 viewer min-h-36 rounded-md border border-gray-200 dark:border-none dark:bg-gray-900">
-            <div ref="preview" class="w-full h-full flex-wrap mx-auto transition-all" :class="[' ' + gap, device == 0 ? ' max-w-full' : device == 1 ? ' max-w-screen-md' : device == 2 ? ' max-w-screen-xs' : null]">
-                <dynamic-component v-for="item in items" :component="item" :preview="preview" v-if="items" :handleDrop="preview ? null : handleDrop" :handleDragOver="preview ? null : handleDragOver" :handleDragStart="preview ? null : handleDragStart" :handleDragEnd="preview ? null : handleDragEnd" :draggable="preview ? false : true" :droppable="preview ? false : true" />
+            <div ref="preview" class="w-full h-full flex-wrap relative mx-auto transition-all" :class="[' ' + gap, device == 0 ? ' max-w-full' : device == 1 ? ' max-w-screen-md' : device == 2 ? ' max-w-screen-xs' : null]">
+                <dynamic-component
+                    v-if="items.length > 0"
+                    v-for="item in items"
+                    :component="item"
+                    :preview="preview"
+                    :handleDrop="preview ? null : handleDrop"
+                    :handleDragOver="preview ? null : handleDragOver"
+                    :handleDragStart="preview ? null : handleDragStart"
+                    :handleDragEnd="preview ? null : handleDragEnd"
+                />
             </div>
         </div>
         <div v-show="toggle" class="block flex-auto">
@@ -252,6 +271,10 @@
                 if (!this.preview) {
                     e.preventDefault();
                 }
+            },
+            clearLocalStorage() {
+                localStorage.removeItem('playground_' + this.id);
+                this.items = this.components;
             },
         },
         mounted() {

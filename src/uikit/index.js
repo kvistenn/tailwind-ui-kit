@@ -1,30 +1,20 @@
-import button from './button.json';
-import input from './input.json';
-import grid from './grid.json';
-import container from './container.json';
+import button from './components/button.json';
+import input from './components/input.json';
+import grid from './components/grid.json';
 
-// Icons
-import buttonIcon from '@/assets/images/icons/button.svg';
-import inputIcon from '@/assets/images/icons/input.svg';
-import gridIcon from '@/assets/images/icons/grid.svg';
+import hero from './layouts/hero.json';
 
-export const components = [
-    {
-        label: 'Button',
-        name: 'button',
-        icon: buttonIcon,
-        component: button
-    },
-    {
-        label: 'Input',
-        name: 'input',
-        icon: inputIcon,
-        component: input
-    },
-    {
-        label: 'Grid',
-        name: 'grid',
-        icon: gridIcon,
-        component: grid
-    }
+const components = [
+    button,
+    input,
+    grid
 ];
+
+const layouts = [
+    hero,
+];
+
+export {
+    components,
+    layouts
+}

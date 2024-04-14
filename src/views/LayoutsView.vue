@@ -1,10 +1,10 @@
 <template>
 	<div class="container my-10 space-y-8">
 		<Playground
-			id="components1"
+			id="hero1"
 			:preview="true"
 			:components="[
-				button,
+				hero
 			]"
 		/>
 	</div>
@@ -12,18 +12,16 @@
 
 <script>
 	import Playground from '@/components/Playground.vue'
-	import button from '@/uikit/components/button.json';
-	import input from '@/uikit/components/input.json';
+	import hero from '@/uikit/layouts/hero.json';
 
 	export default {
-		name: 'ComponentsView',
+		name: 'LayoutsView',
 		components: {
 			Playground
 		},
 		data() {
             return {
-                button,
-				input,
+                hero,
             }
         }
 	}
