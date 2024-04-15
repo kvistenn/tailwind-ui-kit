@@ -1,10 +1,6 @@
 {
-    "label": "Input",
-    "name": "input",
-    "icon": "/src/assets/images/icons/input.svg",
     "tag": "div",
     "classes": "flex w-full rounded leading-none bg-white py-2 border border-gray-200",
-    "draggable": true,
     "children": [
         {
             "tag": "span",

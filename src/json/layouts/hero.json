@@ -1,0 +1,80 @@
+{
+    "tag": "div",
+    "classes": "w-full rounded overflow-hidden",
+    "children": [
+        {
+            "tag": "figure",
+            "classes": "w-full relative border border-red-900 lg:border-none",
+            "children": [
+                {
+                    "tag": "img",
+                    "classes": "object-cover w-full",
+                    "attributes": {
+                        "src": "https://images.unsplash.com/photo-1712668405876-d0df5c444e62",
+                        "alt": "Lorem ipsum dolor sit amet"
+                    }
+                },
+                {
+                    "tag": "figcaption",
+                    "classes": "absolute inset-0 w-full h-full p-6 flex flex-col justify-center items-center",
+                    "children": [
+                        {
+                            "tag": "div",
+                            "classes": "max-w-xl text-center flex flex-col",
+                            "children": [
+                                {
+                                    "tag": "h2",
+                                    "classes": "text-3xl font-bold mb-2",
+                                    "text": "Lorem ipsum dolor sit amet"
+                                },
+                                {
+                                    "tag": "p",
+                                    "classes": "text-sm",
+                                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                },
+                                {
+                                    "tag": "div",
+                                    "classes": "flex justify-center gap-4 mt-4",
+                                    "children": [
+                                        {
+                                            "tag": "button",
+                                            "classes": "flex items-center leading-none rounded px-4 h-10 transition-colors bg-slate-800 font-light text-white hover:border-gray-500 dark:border-white/60 dark:text-white dark:hover:border-white focus:outline-none",
+                                            "children": [
+                                                {
+                                                    "tag": "span",
+                                                    "classes": "uppercase tracking-wide leading-none text-sm",
+                                                    "text": "Button"
+                                                },
+                                                {
+                                                    "tag": "svg",
+                                                    "classes": "w-4 h-4 ml-2",
+                                                    "attributes": {
+                                                        "xmlns": "http://www.w3.org/2000/svg",
+                                                        "fill": "none",
+                                                        "viewBox": "0 0 24 24",
+                                                        "stroke": "currentColor"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "tag": "path",
+                                                            "attributes": {
+                                                                "stroke-linecap": "round",
+                                                                "stroke-linejoin": "round",
+                                                                "stroke-width": "1.5",
+                                                                "d": "M9 5l7 7-7 7"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

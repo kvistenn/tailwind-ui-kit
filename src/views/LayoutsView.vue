@@ -1,8 +1,6 @@
 <template>
 	<div class="container my-10 space-y-8">
-		<Playground
-			id="hero1"
-			:preview="true"
+		<Viewer
 			:components="[
 				hero
 			]"
@@ -11,13 +9,13 @@
 </template>
 
 <script>
-	import Playground from '@/components/Playground.vue'
-	import hero from '@/uikit/layouts/hero.json';
+	import Viewer from '@/components/Viewer.vue'
+	import hero from '@/json/layouts/hero.json';
 
 	export default {
 		name: 'LayoutsView',
 		components: {
-			Playground
+			Viewer
 		},
 		data() {
             return {

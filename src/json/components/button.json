@@ -1,0 +1,11 @@
+{
+    "tag": "button",
+    "classes": "leading-none rounded px-4 py-2 transition-colors border border-gray-200 hover:border-gray-500 dark:border-white/60 dark:text-white dark:hover:border-white focus:outline-none",
+    "children": [
+        {
+            "tag": "span",
+            "classes": "uppercase tracking-wide leading-none text-sm",
+            "text": "Button"
+        }
+    ]
+}

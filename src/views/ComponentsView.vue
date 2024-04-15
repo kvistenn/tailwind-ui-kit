@@ -1,8 +1,6 @@
 <template>
 	<div class="container my-10 space-y-8">
-		<Playground
-			id="components1"
-			:preview="true"
+		<Viewer
 			:components="[
 				button,
 			]"
@@ -11,14 +9,14 @@
 </template>
 
 <script>
-	import Playground from '@/components/Playground.vue'
-	import button from '@/uikit/components/button.json';
-	import input from '@/uikit/components/input.json';
+	import Viewer from '@/components/Viewer.vue'
+	import button from '@/json/components/button.json';
+	import input from '@/json/components/input.json';
 
 	export default {
 		name: 'ComponentsView',
 		components: {
-			Playground
+			Viewer
 		},
 		data() {
             return {
